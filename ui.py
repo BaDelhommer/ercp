@@ -17,12 +17,12 @@ def ui_setup(armaments, armors, spells, on_item_selected):
     root = tk.Tk()
     root.title('Elden Ring Requirements Calculator')
 
-    combos = {}
+    main_hand_combo = new_combobox(root, 'Main Hand', armaments, on_item_selected)
+    off_hand_combo = new_combobox(root, 'Off Hand', armaments, on_item_selected)
+    armor_combo = new_combobox(root, 'Armor', armors, on_item_selected)
+    spell_combo = new_combobox(root, 'Spells', spells, on_item_selected)
 
-    combos['Main Hand'] = new_combobox(root, 'Main Hand', armaments, on_item_selected)
-    combos['Off Hand'] = new_combobox(root, 'Off Hand', armaments, on_item_selected)
-    combos['Armor'] = new_combobox(root, 'Armor', armors, on_item_selected)
-    combos['Spells'] = new_combobox(root, 'Spells', spells, on_item_selected)
+    combos = [main_hand_combo, off_hand_combo, armor_combo, spell_combo]
 
     details_label = tk.Label(root, text='')
     details_label.pack()

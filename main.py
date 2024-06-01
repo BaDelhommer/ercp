@@ -1,25 +1,33 @@
 import tkinter as tk
 from tkinter import ttk
-from ui import ui_setup
-from logic import *
+import requests
+from functools import partial
 
-def main():
-    armaments = fetch_armaments()
-    armor = fetch_armor()
-    spells = fetch_spells()
+def fetch_items():
+    url = 'https://api.erdb.wiki/v1/latest/armaments/'
+    response = requests.get(url)
+    return response.json()
 
-    def on_item_selected(event, slot, items):
-        selected_items = [combos[slot].get() for slot in combos]
-        requirements = calculate_requirements(selected_items, items)
-        details_label.config(text=(
-                             f"Str: {requirements['strength']}, "
-                             f"Dex: {requirements['dexterity']}, "
-                             f"Int: {requirements['intelligence']}, "
-                             f"Fai: {requirements['faith']}"
-        ))
+def show_item_details(combo, event):
+    selected_item = combo.get()
+    for item in list(items.keys()):
+        if item == selected_item:
+            details_label.config(text=f"Requirements: {items[item]['requirements']}")
+            break
 
-    root, combos, details_label = ui_setup(armaments, armor, spells, on_item_selected)
-    root.mainloop()
+items = fetch_items()
 
-if __name__ == '__main__':
-    main()
+root = tk.Tk()
+root.title('Elden Ring Weapon Selector')
+
+main_hand_combo = ttk.Combobox(root, values=list(items.keys()))
+main_hand_combo.pack()
+main_hand_combo.bind('<<ComboboxSelected>>', partial(show_item_details, main_hand_combo))
+
+details_label = tk.Label(root, text='')
+details_label.pack()
+
+attribution_label = tk.Label(root, text='Data provided by Elden Ring Database')
+attribution_label.pack()
+
+root.mainloop()
