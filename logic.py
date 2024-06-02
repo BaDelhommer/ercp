@@ -5,7 +5,7 @@ def fetch_items(url):
     return response.json()
 
 def calculate_requirements(selected_items, weapons, spells):
-    requirements = {'strength': 0, 'dexterity': 0, 'faith': 0, 'intelligence': 0}
+    requirements = {'strength': 0, 'dexterity': 0, 'faith': 0, 'intelligence': 0, 'arcane': 0}
     
     for item_name in selected_items:
         if item_name in weapons:

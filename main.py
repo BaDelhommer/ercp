@@ -1,3 +1,4 @@
+import tkinter as tk
 from ui import setup_ui
 from logic import *
 
@@ -18,10 +19,16 @@ def main():
             f"strength: {requirements['strength']}, "
             f"dexterity: {requirements['dexterity']}, "
             f"faith: {requirements['faith']}, "
-            f"intelligence: {requirements['intelligence']}"
+            f"intelligence: {requirements['intelligence']}, "
+            f"arcane: {requirements['arcane']}"
         ))
+        details_label.pack(pady=10)
 
     root, combos, details_label = setup_ui(weapons, spells, on_button_click)
+
+    attribution_label = tk.Label(root, text='Data provided by Elden Ring Database / https://github.com/EldenRingDatabase/erdb')
+    attribution_label.pack(side=tk.BOTTOM)
+
     root.mainloop()
 
 if __name__ == '__main__':
