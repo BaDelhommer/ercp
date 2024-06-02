@@ -21,8 +21,8 @@ def new_combobox(parent, name, items_list):
     new_combo = ttk.Combobox(frame, values=list(items_list.keys()))
     new_combo.pack(side=tk.RIGHT, fill=tk.X, expand=True)
 
-    new_combo.bind('<KeyRelease>', partial(filter_combos, combo=new_combo, full_value_list=list(items_list.keys())))
-    new_combo.bind('<Return>', partial(expand_dropdown, combo=new_combo))
+    new_combo.bind('<KeyRelease>', partial(filter_combos, combo=new_combo, full_value_list=list(items_list.keys()))) # filter by typing
+    new_combo.bind('<Return>', partial(expand_dropdown, combo=new_combo)) # expand list with enter
 
     frame.pack(fill=tk.X, pady=5)
     return new_combo
@@ -43,6 +43,5 @@ def setup_ui(weapons, spells, on_button_click):
     calc_button.pack(pady=20)
 
     requirements_label = tk.Label(root, text='', background='white', fg='red')
-    # requirements_label.pack(pady=10)
 
     return root, combos, requirements_label

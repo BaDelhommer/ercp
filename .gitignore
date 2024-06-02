@@ -1,1 +1,3 @@
 scratch.py
+.venv
+__pycache__/

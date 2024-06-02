@@ -3,8 +3,13 @@ from ui import setup_ui
 from logic import *
 
 def main():
-    weapons = fetch_items('https://api.erdb.wiki/v1/latest/armaments/')
-    spells = fetch_items('https://api.erdb.wiki/v1/latest/spells/')
+    try:
+        weapons = fetch_items('https://api.erdb.wiki/v1/latest/armaments/')
+        spells = fetch_items('https://api.erdb.wiki/v1/latest/spells/')
+    except Exception as e:
+        print(f"Error during fetch operation: {e}")
+        return
+    
 
     def on_button_click():
         main_hand_item = combos['main hand'].get()
