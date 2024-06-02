@@ -1,33 +1,28 @@
-import tkinter as tk
-from tkinter import ttk
-import requests
-from functools import partial
+from ui import setup_ui
+from logic import *
 
-def fetch_items():
-    url = 'https://api.erdb.wiki/v1/latest/armaments/'
-    response = requests.get(url)
-    return response.json()
+def main():
+    weapons = fetch_items('https://api.erdb.wiki/v1/latest/armaments/')
+    spells = fetch_items('https://api.erdb.wiki/v1/latest/spells/')
 
-def show_item_details(combo, event):
-    selected_item = combo.get()
-    for item in list(items.keys()):
-        if item == selected_item:
-            details_label.config(text=f"Requirements: {items[item]['requirements']}")
-            break
+    def on_button_click():
+        main_hand_item = combos['main hand'].get()
+        off_hand_item = combos['off hand'].get()
+        spell_item = combos['spells'].get()
 
-items = fetch_items()
+        selected_items = [main_hand_item, off_hand_item, spell_item]
 
-root = tk.Tk()
-root.title('Elden Ring Weapon Selector')
+        requirements = calculate_requirements(selected_items, weapons, spells)
 
-main_hand_combo = ttk.Combobox(root, values=list(items.keys()))
-main_hand_combo.pack()
-main_hand_combo.bind('<<ComboboxSelected>>', partial(show_item_details, main_hand_combo))
+        details_label.config(text=(
+            f"strength: {requirements['strength']}, "
+            f"dexterity: {requirements['dexterity']}, "
+            f"faith: {requirements['faith']}, "
+            f"intelligence: {requirements['intelligence']}"
+        ))
 
-details_label = tk.Label(root, text='')
-details_label.pack()
+    root, combos, details_label = setup_ui(weapons, spells, on_button_click)
+    root.mainloop()
 
-attribution_label = tk.Label(root, text='Data provided by Elden Ring Database')
-attribution_label.pack()
-
-root.mainloop()
+if __name__ == '__main__':
+    main()

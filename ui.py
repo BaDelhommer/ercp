@@ -2,32 +2,40 @@ import tkinter as tk
 from tkinter import ttk
 from functools import partial
 
-def new_combobox(parent, name, items_list, on_item_selected):
-    label = tk.Label(parent, name)
+def filter_combos(event, combo, full_value_list):
+    value = event.widget.get().lower()
+    filtered_values = [item for item in full_value_list if value in item.lower()]
+    combo['values'] = filtered_values
+    if filtered_values:
+        combo.update_idletasks()
+
+def expand_dropdown(event, combo):
+    combo.event_generate('<Button-1>')
+
+def new_combobox(parent, name, items_list):
+    label = tk.Label(parent, text=name)
     label.pack()
 
-    combo = ttk.Combobox(parent, values=list(items_list.keys()))
-    combo.pack
+    new_combo = ttk.Combobox(parent, values=list(items_list.keys()))
+    new_combo.pack()
 
-    combo.bind('<<ComboboxSelected>>', partial(on_item_selected, slot=name, items=items_list))
+    new_combo.bind('<KeyRelease>', partial(filter_combos, combo=new_combo, full_value_list=list(items_list.keys())))
+    new_combo.bind('<Return>', partial(expand_dropdown, combo=new_combo))
+    return new_combo
 
-    return combo
-
-def ui_setup(armaments, armors, spells, on_item_selected):
+def setup_ui(weapons, spells, on_button_click):
     root = tk.Tk()
-    root.title('Elden Ring Requirements Calculator')
+    root.title('Elden Ring Stat Calculator')
 
-    main_hand_combo = new_combobox(root, 'Main Hand', armaments, on_item_selected)
-    off_hand_combo = new_combobox(root, 'Off Hand', armaments, on_item_selected)
-    armor_combo = new_combobox(root, 'Armor', armors, on_item_selected)
-    spell_combo = new_combobox(root, 'Spells', spells, on_item_selected)
+    combos = {}
+    combos['main hand'] = new_combobox(root, 'Main Hand', weapons)
+    combos['off hand'] = new_combobox(root, 'Off Hand', weapons)
+    combos['spells'] = new_combobox(root, 'Spells', spells)
 
-    combos = [main_hand_combo, off_hand_combo, armor_combo, spell_combo]
+    calc_button = tk.Button(root, text='Calculate Requirements', command=on_button_click)
+    calc_button.pack()
 
-    details_label = tk.Label(root, text='')
-    details_label.pack()
+    requirements_label = tk.Label(root, text='')
+    requirements_label.pack()
 
-    attribution_label = tk.Label(root, text='Data provided by Elden Ring Database')
-    attribution_label.pack()
-
-    return root, combos, details_label
+    return root, combos, requirements_label
